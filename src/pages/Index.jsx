@@ -1,19 +1,22 @@
 import React, { useState } from 'react';
 import { FaUpload, FaEdit, FaChartBar, FaDollarSign, FaRegCalendarAlt, FaBalanceScale, FaRegListAlt, FaRegMoneyBillAlt, FaRegClock, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+import { extractTextFromPDF, parseFinancialData } from '../utils/parseFinancialDocs';
+import ExpensesGraph from '../components/ExpensesGraph';
 
 const Index = () => {
   const [uploadStatus, setUploadStatus] = useState(null);
+  const [financialData, setFinancialData] = useState(null);
 
-  const handleFileUpload = (event) => {
+  const handleFileUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) {
       setUploadStatus({ success: false, message: 'No file selected' });
       return;
     }
-    // Simulate file upload process
-    setTimeout(() => {
-      setUploadStatus({ success: true, message: 'File uploaded successfully!' });
-    }, 1500);
+    const textContent = await extractTextFromPDF(file);
+    const data = parseFinancialData(textContent);
+    setFinancialData(data);
+    setUploadStatus({ success: true, message: 'File uploaded and data extracted successfully!' });
   };
 
   return (
@@ -69,6 +72,7 @@ const Index = () => {
               <FaRegClock className="text-2xl" />
               <h2 className="font-semibold text-xl">Benchmarking Tool</h2>
             </div>
+            {financialData && <ExpensesGraph data={financialData} />}
           </div>
         </div>
       </main>
