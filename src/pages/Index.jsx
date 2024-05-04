@@ -1,7 +1,21 @@
-import React from 'react';
-import { FaUpload, FaEdit, FaChartBar, FaDollarSign, FaRegCalendarAlt, FaBalanceScale, FaRegListAlt, FaRegMoneyBillAlt, FaRegClock } from 'react-icons/fa';
+import React, { useState } from 'react';
+import { FaUpload, FaEdit, FaChartBar, FaDollarSign, FaRegCalendarAlt, FaBalanceScale, FaRegListAlt, FaRegMoneyBillAlt, FaRegClock, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 
 const Index = () => {
+  const [uploadStatus, setUploadStatus] = useState(null);
+
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (!file) {
+      setUploadStatus({ success: false, message: 'No file selected' });
+      return;
+    }
+    // Simulate file upload process
+    setTimeout(() => {
+      setUploadStatus({ success: true, message: 'File uploaded successfully!' });
+    }, 1500);
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900">
       <header className="bg-white shadow">
@@ -15,6 +29,13 @@ const Index = () => {
             <div className="p-6 bg-white border-b border-gray-200 shadow-sm sm:rounded-lg">
               <FaUpload className="text-2xl" />
               <h2 className="font-semibold text-xl">Upload Financial Documents</h2>
+              <input type="file" onChange={handleFileUpload} className="mt-4 mb-2" />
+              {uploadStatus && (
+                <div className={`text-sm ${uploadStatus.success ? 'text-green-500' : 'text-red-500'}`}>
+                  {uploadStatus.success ? <FaCheckCircle /> : <FaTimesCircle />}
+                  {uploadStatus.message}
+                </div>
+              )}
             </div>
             <div className="p-6 bg-white border-b border-gray-200 shadow-sm sm:rounded-lg">
               <FaEdit className="text-2xl" />
